@@ -88,8 +88,7 @@ const handleUpdateCell = (row: number, col: number, value: string): void => {
   updateCell(row, col, value);
 };
 
-const handleCellFocus = (): void => {
-};
+
 
 
 
@@ -250,7 +249,6 @@ const handleActionButtonsEvents = {
             :puzzle="gameState.puzzle"
             :invalid-cells="invalidCells"
             @update-cell="handleUpdateCell"
-            @cell-focus="handleCellFocus"
           />
           
           <!-- Available Digits -->

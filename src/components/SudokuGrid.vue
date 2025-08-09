@@ -16,7 +16,6 @@
           <input
             :value="getCellDisplayValue(row - 1, col - 1)"
             @input="handleCellInput(row - 1, col - 1, ($event.target as HTMLInputElement).value)"
-            @focus="handleCellFocus(row - 1, col - 1)"
             @keydown="handleKeydown($event, row - 1, col - 1)"
             :readonly="isOriginalCell(row - 1, col - 1)"
             type="text"
@@ -43,7 +42,6 @@ const props = defineProps<Props>();
 
 const emit = defineEmits<{
   updateCell: [row: number, col: number, value: string];
-  cellFocus: [row: number, col: number];
 }>();
 
 const getCellDisplayValue = (row: number, col: number): string => {
@@ -115,21 +113,51 @@ const handleCellInput = (row: number, col: number, value: string): void => {
   emit('updateCell', row, col, value);
 };
 
-const handleCellFocus = (row: number, col: number): void => {
-  emit('cellFocus', row, col);
-};
 
 const handleKeydown = (event: KeyboardEvent, row: number, col: number): void => {
-  if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab', 'Enter'].includes(event.key)) {
+  if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
+    event.preventDefault();
+    navigateToCell(event.key, row, col);
     return;
   }
   
-  if (['Backspace', 'Delete'].includes(event.key)) {
+  if (['Backspace', 'Delete','Tab'].includes(event.key)) {
     return;
   }
   
+  // Only allow digits 1-9
   if (!/^[1-9]$/.test(event.key)) {
     event.preventDefault();
+  }
+};
+
+const navigateToCell = (direction: string, currentRow: number, currentCol: number): void => {
+  let newRow = currentRow;
+  let newCol = currentCol;
+  
+  switch (direction) {
+    case 'ArrowUp':
+      newRow = Math.max(0, currentRow - 1);
+      break;
+    case 'ArrowDown':
+      newRow = Math.min(8, currentRow + 1);
+      break;
+    case 'ArrowLeft':
+      newCol = Math.max(0, currentCol - 1);
+      break;
+    case 'ArrowRight':
+      newCol = Math.min(8, currentCol + 1);
+      break;
+  }
+  
+  // Focusing the target cell
+  const targetInput = document.querySelector(
+    `.sudoku-grid .sudoku-row:nth-child(${newRow + 1}) .sudoku-cell:nth-child(${newCol + 1}) input`
+  ) as HTMLInputElement;
+  
+  if (targetInput) {
+    targetInput.focus();
+    targetInput.select();
   }
 };
 </script>

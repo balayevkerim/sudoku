@@ -16,7 +16,7 @@ export function useSudokuGame() {
   const gameState = ref<GameState>({
     puzzle: Array(9).fill(null).map(() => Array(9).fill(null)),
     board: Array(9).fill(null).map(() => Array(9).fill(null)),
-    difficulty: 'intermediate',
+    difficulty: 'beginner',
     score: 0,
     hintsUsed: 0,
     startTime: null,
@@ -327,7 +327,7 @@ export function useSudokuGame() {
     return Array.from(new Set(invalid));
   };
 
-  const startNewGame = (difficulty: Difficulty = 'intermediate'): void => {
+  const startNewGame = (difficulty: Difficulty = 'beginner'): void => {
     gameState.value.difficulty = difficulty;
     gameState.value.score = 0;
     gameState.value.hintsUsed = 0;
